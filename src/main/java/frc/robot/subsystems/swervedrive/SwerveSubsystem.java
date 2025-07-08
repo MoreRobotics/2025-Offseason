@@ -6,6 +6,7 @@ package frc.robot.subsystems.swervedrive;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -27,6 +28,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -69,6 +71,15 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private       Vision      vision;
 
+
+  private CANcoder fLCANCoder;
+  private CANcoder fRCANCoder;
+  private CANcoder bLCANCoder;
+  private CANcoder bRCANCoder;
+  private double angleConversionFactor;
+  private double driveConversionFactor;
+
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -110,6 +121,15 @@ public class SwerveSubsystem extends SubsystemBase
     }
     setupPathPlanner();
     RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
+
+    fLCANCoder = new CANcoder(0);
+    fRCANCoder = new CANcoder(1);
+    bLCANCoder = new CANcoder(2);
+    bRCANCoder = new CANcoder(3);
+
+    angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(21.4285714286);
+    driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75);
+
   }
 
   /**
@@ -144,7 +164,15 @@ public class SwerveSubsystem extends SubsystemBase
       swerveDrive.updateOdometry();
       vision.updatePoseEstimation(swerveDrive);
     }
+
+    SmartDashboard.putNumber("Front Left CANCoder", fLCANCoder.getPosition().getValueAsDouble() * 360);
+    SmartDashboard.putNumber("Front Right CANCoder", fRCANCoder.getPosition().getValueAsDouble() * 360);
+    SmartDashboard.putNumber("Back Left CANCoder", bLCANCoder.getPosition().getValueAsDouble() * 360);
+    SmartDashboard.putNumber("Back Right CANCoder", bRCANCoder.getPosition().getValueAsDouble() * 360);
+
   }
+
+
 
   @Override
   public void simulationPeriodic()
