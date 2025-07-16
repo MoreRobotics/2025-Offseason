@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -97,12 +100,20 @@ public class RobotContainer
   public RobotContainer()
   {
 
-    new AbsoluteFieldDrive(
-      drivebase,
-      () -> driverXbox.getLeftX(),
-      () -> driverXbox.getLeftY(),
-      () -> driverXbox.getRightX()
-    );
+     // Applies deadbands and inverts controls because joysticks
+    // are back-right positive while robot
+    // controls are front-left positive
+    // left stick controls translation
+    // right stick controls the desired angle NOT angular rotation
+    Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
+        () -> driverXbox.getLeftY(),
+        () -> driverXbox.getLeftX(),
+        () -> driverXbox.getRightX(),
+        () -> driverXbox.getRightY());
+        
+    drivebase.setDefaultCommand(driveFieldOrientedDirectAngle);
+
+    driverXbox.start().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     // Configure the trigger bindings
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);

@@ -7,6 +7,7 @@ package frc.robot.subsystems.swervedrive;
 import static edu.wpi.first.units.Units.Meter;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -76,6 +77,11 @@ public class SwerveSubsystem extends SubsystemBase
   private CANcoder fRCANCoder;
   private CANcoder bLCANCoder;
   private CANcoder bRCANCoder;
+  private TalonFX fLDrive;
+  private TalonFX fRDrive;
+  private TalonFX bLDrive;
+  private TalonFX bRDrive;
+
   private double angleConversionFactor;
   private double driveConversionFactor;
 
@@ -169,6 +175,7 @@ public class SwerveSubsystem extends SubsystemBase
     SmartDashboard.putNumber("Front Right CANCoder", fRCANCoder.getPosition().getValueAsDouble() * 360);
     SmartDashboard.putNumber("Back Left CANCoder", bLCANCoder.getPosition().getValueAsDouble() * 360);
     SmartDashboard.putNumber("Back Right CANCoder", bRCANCoder.getPosition().getValueAsDouble() * 360);
+    SmartDashboard.putNumberArray("Module States", swervelib.telemetry.SwerveDriveTelemetry.measuredStates);
 
   }
 
@@ -462,7 +469,7 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
                               DoubleSupplier headingY)
   {
-    // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+    //  swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
 
       Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
