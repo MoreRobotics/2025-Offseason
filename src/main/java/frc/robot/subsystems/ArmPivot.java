@@ -20,6 +20,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.spark.config.LimitSwitchConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmPivot extends SubsystemBase {
@@ -91,21 +92,24 @@ public class ArmPivot extends SubsystemBase {
   }
 
   private void setInternalEncoder() {
-    m1_ArmPivot.setPosition(e_armPivot.getPosition().getValueAsDouble());
+    m1_ArmPivot.setPosition(getCANCoderInDegrees());
   }
 
-  public void setArmPivotPosition() {
+  public void setArmPivotPosition(double setpoint) {
+    target = setpoint;
     m1_ArmPivot.setControl(m_Request.withPosition(target));
     m2_ArmPivot.setControl(m_Follow.withMasterID(m1_ArmPivotID));
     m3_ArmPivot.setControl(m_Follow.withMasterID(m1_ArmPivotID));
   }
 
-  private void setCANCoderInDegrees() {
-    e_armPivot.setPosition(e_armPivot.getPosition().getValueAsDouble() * 360);
+  private double getCANCoderInDegrees() {
+    return e_armPivot.getPosition().getValueAsDouble() * 360;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("ArmPivot CANCoder in degrees", getCANCoderInDegrees());
+    
   }
 }

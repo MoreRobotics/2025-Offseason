@@ -52,8 +52,9 @@ public class Wrist extends SubsystemBase {
 
   }
 
-  private void setPosition() {
-    m_Wrist.setControl(m_Request.withPosition(null));
+  private void setTarget(double setpoint) {
+    target = setpoint;
+    m_Wrist.setControl(m_Request.withPosition(target));
   }
 
   private double getWristCurrent() {
@@ -71,7 +72,7 @@ public class Wrist extends SubsystemBase {
     return m_Wrist.getPosition().getValueAsDouble() * 360;
   }
 
-  private void setWristPosition() {
+  private void setPosition() {
     m_Wrist.setPosition(0);
   }
 
