@@ -11,26 +11,26 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Graber extends SubsystemBase {
-  private TalonFX m_Graber;
+public class Grabber extends SubsystemBase {
+  private TalonFX m_Grabber;
   private TalonFXConfiguration configs;
   private MotionMagicVelocityVoltage m_request;
 
 
   private int graberID = 0;
-  private double graberPGains = 0;
+  private double graberPGains = 0.1;
   private double graberIGains = 0;
   private double graberDGains = 0;
   private double currentLimit = 0;
   private double gearRatio = 0;
 
-  private double corralIntakeSpeed = 0;
+  public double corralIntakeSpeed = 3;
   private double corralOuttakeSpeed = 0;
   private double algaeIntakeSpeed = 0;
   private double algaeOuttakeSpeed = 0;
   /** Creates a new Graber. */
-  public Graber() {
-    m_Graber = new TalonFX(graberID);
+  public Grabber() {
+    m_Grabber = new TalonFX(graberID);
     m_request = new MotionMagicVelocityVoltage(0).withSlot(0);
 
     configs = new TalonFXConfiguration();
@@ -45,16 +45,16 @@ public class Graber extends SubsystemBase {
 
   }
 
-  private void intakeCorral(double speed) {
-    m_Graber.setControl(m_request.withVelocity(speed));
+  public void intakeCorral(double speed) {
+    m_Grabber.setControl(m_request.withVelocity(speed));
   }
 
   private void intakeAlgae(double speed) {
-    m_Graber.setControl(m_request.withVelocity(speed));
+    m_Grabber.setControl(m_request.withVelocity(speed));
   } 
 
   private double getCurrent() {
-    return m_Graber.getSupplyCurrent().getValueAsDouble();
+    return m_Grabber.getSupplyCurrent().getValueAsDouble();
   }
   
 

@@ -22,9 +22,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.CoralIntake;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -42,7 +44,8 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/falcon"));
-  private final Elevator s_Elevator = new Elevator();                                                                       
+  private final Elevator s_Elevator = new Elevator();
+  private final Grabber s_Grabber = new Grabber();                                                                       
     
 
   /**
@@ -147,6 +150,7 @@ public class RobotContainer
     driverXbox.start().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
 
     driverXbox.y().whileTrue(new MoveElevator(s_Elevator, 5.0));
+    driverXbox.leftTrigger().whileTrue(new CoralIntake(s_Grabber));
     
 
     

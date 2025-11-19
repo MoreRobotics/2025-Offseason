@@ -30,7 +30,7 @@ public class Elevator extends SubsystemBase {
   private double elevatorIGains = 0;
   private double elevatorDGains = 0;
   private double elevatorGGains = 0;
-  private double elevatorHeight = 39;
+  private double elevatorHeight = 23;
   private double currentLimit = 0;
   private double target = 0;
 
