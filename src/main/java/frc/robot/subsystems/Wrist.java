@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,13 +19,13 @@ public class Wrist extends SubsystemBase {
   private MotionMagicVoltage m_Request;
   private TalonFXConfiguration configs;
 
-  private int m_WristID = 0;
+  private int m_WristID = 14;
   private double wristPGains = 0;
   private double wristIGains = 0;
   private double wristDGains = 0;
   private double forwardLimit = 0;
   private double reverseLimit = 0;
-  private double gearRatio = 0;
+  private double gearRatio = 37.925/360;
   private double currentLimit = 0;
   private double target = 0;
   private double safePositionCurrentLimit = 0;
@@ -35,7 +36,7 @@ public class Wrist extends SubsystemBase {
   public Wrist() {
     m_Wrist = new TalonFX(m_WristID);
 
-    m_Request = new MotionMagicVoltage(null).withSlot(0);
+    m_Request = new MotionMagicVoltage(0).withSlot(0);
 
     configs = new TalonFXConfiguration();
     configs.Slot0.kP = wristPGains;
@@ -49,6 +50,9 @@ public class Wrist extends SubsystemBase {
     configs.CurrentLimits.SupplyCurrentLimitEnable = true;
     configs.CurrentLimits.SupplyCurrentLimit = currentLimit;
     configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    m_Wrist.getConfigurator().apply(configs);
+    //setPosition();
 
   }
 
@@ -68,8 +72,8 @@ public class Wrist extends SubsystemBase {
     }
   }
 
-  private double getWristPositionInDegrees() {
-    return m_Wrist.getPosition().getValueAsDouble() * 360;
+  public double getWristPositionInDegrees() {
+    return m_Wrist.getPosition().getValueAsDouble();
   }
 
   private void setPosition() {

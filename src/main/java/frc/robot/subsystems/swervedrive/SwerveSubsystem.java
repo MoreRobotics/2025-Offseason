@@ -134,7 +134,7 @@ public class SwerveSubsystem extends SubsystemBase
     angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(21.4285714286);
     driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75);
 
-    estimatedRobotPosePublisher = NetworkTableInstance.getDefault().getStructTopic("/EstimatedRobotPose", Pose2d.struct).publish();
+    //estimatedRobotPosePublisher = NetworkTableInstance.getDefault().getStructTopic("/EstimatedRobotPose", Pose2d.struct).publish();
     
   }
 
@@ -170,7 +170,7 @@ public class SwerveSubsystem extends SubsystemBase
     SmartDashboard.putNumber("Back Right CANCoder", bRCANCoder.getPosition().getValueAsDouble() * 360);
     SmartDashboard.putNumberArray("Module States", swervelib.telemetry.SwerveDriveTelemetry.measuredStates);
 
-    estimatedRobotPosePublisher.set(getPose());
+    //estimatedRobotPosePublisher.set(getPose());
 
   }
 
